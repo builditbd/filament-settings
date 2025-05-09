@@ -8,12 +8,24 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('filament_settings_table', function (Blueprint $table) {
-            $table->id();
-
-            // add fields
-
+        Schema::create('settings', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('key')->unique();
+            $table->string('display_name');
+            $table->text('value')->nullable();
+            $table->text('details')->nullable();
+            $table->enum('type', ['text', 'text_area', 'radio_btn', 'checkbox', 'select_dropdown', 'file', 'image']);
+            $table->integer('order')->nullable();
+            $table->string('settings_group')->nullable();
+            $table->string('remarks')->nullable();
+            
+            $table->boolean('is_permanent')->default(false);
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('modified_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('modified_by')->references('id')->on('users');
         });
     }
 };
